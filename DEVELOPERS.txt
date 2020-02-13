@@ -1,0 +1,164 @@
+/*
+    @author: Omar Muhammetkulyyev
+*/
+main.c:
+	/*
+        Simple (incomplete) simulation of Klondike Solitaire.
+        Takes in parameter (filename in our case) from the command line
+        and calls the respective parts of the main project. (i.e there is
+        only part1 implemented)
+    */
+	int main(int argc, char* argv[]);
+
+/*
+    @author: Omar Muhammetkulyyev
+*/
+part1.h:
+    /* 
+        struct that represents a card with member variables: suit, rank and color
+    */
+    struct Card{ };
+    
+    /*
+        Some useful global variables:
+    */
+    #define MAX_CARD 70     // maximum number of cards that can be present
+    #define MAX_FOUND 4     // max number of foundations
+    #define COLUMN 7        // max number of columns in tableau
+    
+    /*
+        Prototype of the part1 function that is implemented in part1.c.
+        Simply implements all the features required for part1 of this project.
+        Please refer to the documentation in part1.h
+    */
+    int part1(FILE* inFile, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], struct Card waste[MAX_CARD], int* wasteSize,
+            struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], int fSize[MAX_FOUND], int* turns, int* limit);
+
+/*
+    @autor: Omar Muhammetkulyyev
+*/
+part1.c:
+    // Useful constants
+    const char keys[][MAX_CHAR] = {"RULES:", "FOUNDATIONS:", "TABLEAU:", "STOCK:", "MOVES:"};
+    const char ranks[] = "_A23456789TJQK";
+    const char suits[] = "cdhs";
+
+    // Keeps track of the line number to report error
+    int lineCount = 1;
+
+    // Global variables to keep track of the game mode: turn number and limit of resetting the waste back to the stock
+    int turns, limit;
+
+    // Global helper array
+    int allCard[4][15];
+
+    // Global arrays to keep track of the tableau, waste, stock and foundation respectively
+    struct Card tableau[COLUMN][MAX_CARD], waste[MAX_CARD], stock[MAX_CARD], found[MAX_FOUND][MAX_CARD];
+
+    // Global arrays to keep track of the size of the tableau columns, tableau seperators, waste, stock and foundation respectively
+    int tSize[COLUMN], cSize[COLUMN], wasteSize, stockSize, fSize[MAX_FOUND];
+
+    /* Checks if the given character is a space (either one of ' ', '\t',
+     * '\r' and '\n')
+     * @param ch: given character
+     * @return 1 if the character is a space, 0 otherwise
+     * */
+    int isSpace(int ch){ }
+
+    /* Checks if there exists any non-space character in the given file buffer
+     * @param inFile: file to read the data from
+     * @return 1 if the buffer contains non-space character, 0 otherwise
+     * */
+    int hasNext(FILE* inFile){ }
+
+    /* Scans in the next non-space sequence of characters into the provided
+     * string (str). Stops scanning into the string if the length of the word
+     * exceeds MAX_CHAR-1. Assigns \0 to the end of the string (null termination)
+     * @param inFile: given file to read data from
+     * @param str: given string to scan data into
+     * @return the size of the scanned word
+     * */
+    int getNext(FILE* inFile, char str[]){ }
+
+    /* Checks if the two given strings are equal
+     * @param a: given first string
+     * @param b: given second string
+     * @return 1 if the strings are equal, 0 otherwise
+     * */
+    int isEqual(char a[], const char b[]){ }
+
+    /* Skips all the characters until reaches a new line '\n', in which case
+     * ungets it and retains '\n' untouched in buffer
+     * @param inFile: given file to read from
+     * */
+    void skipLine(FILE* inFile){ }
+
+    /* Checks if the given string is a digit
+     * @param a: given string
+     * @return 1 if the string is between 0 <= string <= 9, 0 otherwise
+     * */
+    int isDigit(char a[]){ }
+
+    /*
+     * Evaluates the RULES module
+     * @param inFile: given file to read data from
+     * @return 1 if the given module is valid, 0 otherwise
+     * */
+    int rules(FILE* inFile){ }
+
+    /* Returns the suit of the card
+     * @param a: given suit of the card in char format
+     * @return the corresponsing index of occurrence in "cdhs", -1 if not found
+     * */
+    int getSuit(char a){ }
+
+    /* Returns the rank of the card
+     * @param a: given rank of the card in char format
+     * @return the corresponsing index of occurrence in "_A23456789TJQK", -1 if not found
+     * */
+    int getRank(char a){ }
+
+    /* Returns the color of the suit
+     * @param a: suit of the card
+     * @return -1 if black, 1 otherwise
+     * */
+    int getColor(char a){ }
+
+    /* Checks for validity of the card
+     * @param a: given card in form of a string
+     * @return 1 if the given string is indeed card, 0 otherwise
+     * */
+    int isValidCard(char a[]){ }
+    
+    /* Checks for duplicates
+     * @param a: given card
+     * @return true if the given card has been seen before, false otherwise
+     * */
+    int isDuplicate(struct Card a){ }
+
+    /*
+     * Evaluates the FOUNDATION module
+     * @param inFile: given file to read data from
+     * @return 1 if the given module is valid, 0 otherwise
+     * */
+    int foundation(FILE* inFile){ }
+    
+    /*
+     * Evaluates the TABLEAU module
+     * @param inFile: given file to read data from
+     * @return 1 if the given module is valid, 0 otherwise
+     * */
+    int table(FILE* inFile){ }
+
+    /*
+     * Evaluates the STOCK module
+     * @param inFile: given file to read data from
+     * @return 1 if the given module is valid, 0 otherwise
+     * */
+    int stockAndWaste(FILE* inFile){ }
+    
+    /*
+        Please refer to documentation in part1.h
+    */
+    int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], int gcSize[COLUMN], struct Card gwaste[MAX_CARD], int* gwasteSize,
+            struct Card gstock[MAX_CARD], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], int* gturns, int* glimit){ }
