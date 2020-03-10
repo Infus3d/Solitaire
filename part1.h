@@ -7,6 +7,7 @@
     #define MAX_CARD 70
     #define MAX_FOUND 4
     #define COLUMN 7
+    #define MAX_CHAR 20
     
     /* Simple Card struct that has suit, rank and color as member variables.
      * Also contains the integer version of suit (isuit) and rank (irank).
@@ -18,6 +19,18 @@
         int irank;
         int color;
     };
+    
+    //Documentation for these functions are provided in part1.c
+    int isSpace(int ch);
+    int hasNext(FILE* inFile, int* lcount);
+    int getNext(FILE* inFile, char str[]);
+    int isEqual(char a[], const char b[]);
+    void skipLine(FILE* inFile);
+    int isDigit(char a[]);
+    int getSuit(char a);
+    int getRank(char a);
+    int getColor(char a);
+    int isValidCard(char a[]);
     
     /* The function is the first part of the COMS327S20 Project.
      * Reads Klondike Solitaire game's data from the file provided and parses
@@ -41,8 +54,10 @@
      * @param turns: number of the cards that are turned over from stock to the waste
      * @param limit: max number of times the waste can be reset back to the stock. Usually
      *               is in between 0 and 9. Indicates infinity (unlimited) if 10.
+     * @param lcount: current line number before processing MOVES section
      * @return 1 if the file has been successfully read, 0 otherwise
      * */
     int part1(FILE* inFile, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], struct Card waste[MAX_CARD], int* wasteSize,
-            struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], int fSize[MAX_FOUND], int* turns, int* limit);
+              struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], int fSize[MAX_FOUND], int* turns, 
+              int* limit, int* lcount);
 #endif

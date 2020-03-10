@@ -1,6 +1,6 @@
 # coms327project1
 ### Part 1
-Part1 of the project reads game details from the given file (_stdin_ if not specified) and parses it for validity. At the end, the program either terminates after printing out the first error message or prints to stdout the number of covered, in-stock and in-waste cards in the game if the program runs smoothly (without any errors).  
+Part1 of the project the reads game details from the given file (_stdin_ if not specified) and parses it for validity. At the end, the program either terminates after printing out the first error message or prints to stdout the number of covered, in-stock and in-waste cards in the game if the program runs smoothly (without any errors).  
 Part1 was implemented **solely by me** (no partner) and below are the features I implemented from the pdf:
 * READMEfile, that describes implemented features
 * DEVELOPERSfile, that gives an overview of your implementation, including a breakdownof source files and functions, and who authored each function.
@@ -26,7 +26,7 @@ Additional features:
 
 
 ### Part 2
-Part2 of the project reads game details from the provided file (_stdin_ if not specified) and parses it for validity interms of both format validity and validity as a game-move. If the format is illegal, writes to _stderr_ and indicates the offensive line. If the format is valid but the move can not be processed for that instant of the game state then outputs to _stdout_ the move number of the invalid move and writes to the provided output file the game state that was valid so far (_stdout_ if not specified with _-o_ switch). If there is neither formatting error nor invalid input, total number of processed moves is written to _stdout_ and the final game state is written to wither specified file or _stdout_. With the help of _-m N_ switch, the user can control the number of moves to process.  
+Part2 of the project the reads game details from the provided file (_stdin_ if not specified) and parses it for validity in terms of both format validity and validity as a game-move. If the format is illegal, writes to _stderr_ and indicates the offensive line. If the format is valid but the move can not be processed for that instant of the game state then outputs to _stdout_ the move number of the invalid move and writes to the provided output file the game state that was valid so far (_stdout_ if not specified with _-o_ switch). If there is neither formatting error nor invalid input, total number of processed moves is written to _stdout_ and the final game state is written to either specified file or _stdout_. With the help of _-m N_ switch, the user can control the number of moves to process.  
 Part2 was implemented **solely by me** (no partner) and below are the features I implemented from the pdf:
 * READMEfile, that describes implemented features
 * DEVELOPERSfile, that gives an overview of your implementation, including a breakdownof source files and functions, and who authored each function.

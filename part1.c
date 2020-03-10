@@ -10,7 +10,7 @@ const char ranks[] = "_A23456789TJQK";
 const char suits[] = "cdhs";
 
 // Keeps track of the line number to report error
-int lineCount=1;
+int lineCount = 1;
 
 // Global variables to keep track of the game mode: turn number and limit of resetting the waste back to the stock
 int turns, limit;
@@ -30,25 +30,28 @@ int tSize[COLUMN], cSize[COLUMN], wasteSize, stockSize, fSize[MAX_FOUND];
  * @return 1 if the character is a space, 0 otherwise
  * */
 int isSpace(int ch){
-    return ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n';
+    return (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n');
 }
 
 /* Checks if there exists any non-space character in the given file buffer
  * @param inFile: file to read the data from
  * @return 1 if the buffer contains non-space character, 0 otherwise
  * */
-int hasNext(FILE* inFile){
+int hasNext(FILE* inFile, int* lcount){
     while(1){
         if(feof(inFile))
             return 0;
         
         int nxt = fgetc(inFile);
+        
+        if(feof(inFile))
+          return 0;
         if(!isSpace(nxt)){
             ungetc(nxt, inFile);
             return 1;
         }
         
-        if(nxt == '\n') lineCount++;
+        if(nxt == '\n') (*lcount)++;
     }
 }
 
@@ -127,7 +130,7 @@ int isDigit(char a[]){
 int rules(FILE* inFile){
     int counter = 0;
     while(1){
-        if(!hasNext(inFile)){
+        if(!hasNext(inFile, &lineCount)){
             fprintf(stderr, "Error near line %d: Expecting %s\n", lineCount, counter == 0 ?
                 "turn" : counter == 1 ? "1 or 3" : counter == 2 ? "unlimited or limit" : "limit number([0...9])");
             return 0;
@@ -154,7 +157,7 @@ int rules(FILE* inFile){
         }
         else if(counter == 2){
             if(isEqual(temp, "unlimited")){
-                limit = 10;
+                limit = 10; // 10 indicates unlimited
                 return 1;
             }
             else if(!isEqual(temp, "limit")){
@@ -236,7 +239,7 @@ int isDuplicate(struct Card a){
 int foundation(FILE* inFile){
     int counter = 0;
     while(counter < 4){
-        if(!hasNext(inFile)){
+        if(!hasNext(inFile, &lineCount)){
             fprintf(stderr, "Error near line %d: Expecting %s %d\n", lineCount, "card", counter);
             return 0;
         }
@@ -254,7 +257,7 @@ int foundation(FILE* inFile){
         
         for(int i=0; i<=getRank(temp[0]); i++){
             found[counter][i].suit = temp[1];
-            found[counter][i].rank = temp[0];
+            found[counter][i].rank = ranks[i];
             found[counter][i].isuit = getSuit(temp[1]);
             found[counter][i].irank = i;
             found[counter][i].color = getColor(temp[1]);
@@ -282,7 +285,7 @@ int table(FILE* inFile){
     
     while(counter > -1){
         int before = lineCount;
-        if(!hasNext(inFile)){
+        if(!hasNext(inFile, &lineCount)){
             fprintf(stderr, "Error near line %d: Expecting %s\n", lineCount, "tableau card/seperator");
             return 0;
         }
@@ -335,7 +338,7 @@ int table(FILE* inFile){
 int stockAndWaste(FILE* inFile){
     int vis = 0;
     while(1){
-        if(!hasNext(inFile)){
+        if(!hasNext(inFile, &lineCount)){
             fprintf(stderr, "Error near line %d: Expecting %s\n", lineCount, "MOVES:");
             return 0;
         }
@@ -395,12 +398,13 @@ int stockAndWaste(FILE* inFile){
 }
 
 int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], int gcSize[COLUMN], struct Card gwaste[MAX_CARD], int* gwasteSize,
-            struct Card gstock[MAX_CARD], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], int* gturns, int* glimit){
+            struct Card gstock[MAX_CARD], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], 
+            int* gturns, int* glimit, int* lcount){
     
     char str[MAX_CHAR];
-    int keyCn = 0; //key coutner
+    int keyCn = 0; //key counter
     while(keyCn < 5 && !feof(inFile)){
-        if(!hasNext(inFile))    break;
+        if(!hasNext(inFile, &lineCount))    break;
         getNext(inFile, str);
         
         if(str[0] == '#'){   
@@ -408,7 +412,6 @@ int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], in
             continue;
         }
         if(!isEqual(str, keys[keyCn])){
-            printf("%s %d\n", str, lineCount);
             fprintf(stderr, "Errore near line %d: Expecting %s\n", lineCount, keys[keyCn]);
             return 0;
         }
@@ -469,17 +472,14 @@ int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], in
         return 0;
     }
     
-    /***************** Calculating outputs *****************/
-    int covered = 0;
+    /**************** Copying back to the original given variables ********************/
     for(int i=0; i<COLUMN; i++){
-        for(int j=0; j<tSize[i]; j++)
-            gtableau[i][j] = tableau[i][j];
-        gtSize[i] = tSize[i];
-        gcSize[i] = cSize[i];
-        covered += cSize[i];
+      for(int j=0; j<tSize[i]; j++)
+        gtableau[i][j] = tableau[i][j];
+      gcSize[i] = cSize[i];
+      gtSize[i] = tSize[i];
     }
     
-    /**************** Copying back to the original given variables ********************/
     (*gwasteSize) = wasteSize;
     for(int i=0; i<wasteSize; ++i)
         gwaste[i] = waste[i];
@@ -495,11 +495,7 @@ int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], in
     }
     (*gturns) = turns;
     (*glimit) = limit;
-    
-    printf("Input file is valid\n");
-    printf("%d covered cards\n", covered);
-    printf("%d stock cards\n", stockSize);
-    printf("%d waste cards\n", wasteSize);
+    (*lcount) = lineCount;
     
     return 1;
 }
