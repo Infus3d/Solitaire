@@ -24,6 +24,5 @@ Additional features:
 * Checks for the validity of the piles of tableau columns by observing if there is any uncovered cards after non-zero number of covered cards
 * Store the data of the given state of the game for future use (tableau, stock, waste and foundations)
 
-
 ###Part2
 This is the Part2 of the COMS327S20 Project.
