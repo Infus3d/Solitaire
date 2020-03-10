@@ -1,5 +1,5 @@
 # coms327project1
-### Part1
+### Part 1
 This is the Part1 of the COMS327S20 Project. Part1 of the project requires to read game details from the given file (stdin if not specified) and parse it for validity. At the end, the program should either terminate after printing out the first error message or print to stdout the number of covered, in-stock and in-waste cards in the game if the program runs smoothly (without any errors).  
 Part1 was implemented solely by me (no partner) and below are the features I implemented from the pdf:
 * READMEfile, that describes implemented features
@@ -25,5 +25,22 @@ Additional features:
 * Store the data of the given state of the game for future use (tableau, stock, waste and foundations)
 
 
-### Part2
+### Part 2
 This is the Part2 of the COMS327S20 Project.
+Part2 was implemented **solely by me** (no partner) and below are the features I implemented from the pdf:
+* READMEfile, that describes implemented features
+* DEVELOPERSfile, that gives an overview of your implementation, including a breakdownof source files and functions, and who authored each function.
+* WorkingMakefile.  Typing “make” builds executablescheckandadvance.
+* Reads from _stdin_ if no filename argument
+* Reads from filename passed as argument
+* Summary output to _stdout_
+* Output is in human-readable format
+* Correctly processes moves
+* _-m_ switch
+* Appropriate error messages for formatting errors
+* Catches invalid moves
+* Stress tests
+* Works for _turn 3_
+* Works for _limit R_
+* _-x_ switch for exchange format output
+* _-o_ switch
