@@ -1,7 +1,92 @@
+/************************************************* Part2 begin *************************************************/
 /*
     @author: Omar Muhammetkulyyev
 */
-main.c:
+advanceMain.c:
+    /* Simulation of a Klondike Solitaire with Part1 and Part2 (not finished yet).
+    * Takes in any game configuration and determines if it has formatting error,
+    * or invalid input for the current game state. If none of these happen,
+    * then the program parses the input completely and outputs the final state
+    * of the game. Note the game outputs the final configuration even if
+    * invalid input were encountered, in which case it first prints out the
+    * number of the invalid move and then the state of the game paused at that
+    * instant. If -m N switch is provided, the program processes at most N
+    * moves from the given initial MOVES: section; If -m N is ommitted this numer
+    * is set to INFINITY or unlimited moves. If -x is provided, the program
+    * outputs the final state in exchange format instead of human-readable format
+    * when omitted. Outputs to a given file by -o fileName switch or stdout if omitted.
+    * @param argc: number of the command line arguments
+    * @param argv: array of strings that represent command line arguments
+    * @return 0 if the program is successfully executed
+    * */
+    int main(int argc, char* argv[]){ }
+
+/*
+    @author: Omar Muhammetkulyyev
+*/
+part2.h:
+    // Useful constant
+    #define INF 1e6+7
+    
+    /* This is the second part of COMS327S20 Project. Takes in the given
+    * state of the game until "MOVES:" section, and processes the section
+    * until the end of file. If there is a formatting error, line number of
+    * the illegal format is printed out. If the format is correct but the
+    * input is invalid for the current state of the game, the move number
+    * is printed out. If there is neither formatting error nor invalid input
+    * then total number of processed moves is printed out.
+    * @param inFile: given file buffer to read the data from
+    * @param tableau: literal tableau of cards of the given state of the game
+    * @param tSize: contains sizes of each columns of tableau
+    * @param cSize: contains sizes of covered cards in each column of the tableau
+    * @param waste: contains the cards that are in the waste currently. Last card of 
+    *               the array is the topmost card in the waste
+    * @param wasteSize: size of the waste array
+    * @param stock: contains the cards that are in the stock currently. Last card of
+    *               the array is the topmost card in the stock
+    * @param stockSize: size of the stock array
+    * @param found: contains cards that are in 4 foundations.
+    * @param fSize: the size of the each foundation
+    * @param turns: number of the cards that are turned over from stock to the waste
+    * @param limit: max number of times the waste can be reset back to the stock. Usually
+    *               is in between 0 and 9. Indicates infinity (unlimited) if 10.
+    * @param lcount: current line number before processing MOVES section
+    * @return 1 if the file has been successfully read, 0 if there is a formatting error
+    *         or -1 if the provided move is not valid for that instant of the game state
+    * */
+    int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], 
+            struct Card waste[MAX_CARD], int* wasteSize, struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], 
+            int fSize[MAX_FOUND], int* turns, int* limit, int* lcount);
+
+/*
+    @author: Omar Muhammetkulyyev
+*/
+part2.c:
+    //keeping the # of curline
+    int lineCount;
+    
+    /* Returns the minimum of the two input parameters
+    * @param x: first integer to compare
+    * @param y: second integer to compare
+    * @return the value of them minimum of the two given integers
+    * */
+    int min(int x, int y){ }
+    
+    /*
+        Please refer to part2.h for the documentation
+    */
+    int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], 
+          struct Card waste[MAX_CARD], int* wasteSize, struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], 
+          int fSize[MAX_FOUND], int* turns, int* limit, int* lcount){ }
+
+/************************************************* Part2 end *************************************************/
+
+/************************************************* Part1 begin *************************************************/
+
+/*
+    @author: Omar Muhammetkulyyev
+*/
+checkMain.c:
 	/*
         Simple (incomplete) simulation of Klondike Solitaire.
         Takes in parameter (filename in our case) from the command line
@@ -27,12 +112,27 @@ part1.h:
     #define COLUMN 7        // max number of columns in tableau
     
     /*
+        Documentation for the following helper functions are provided in part1.c
+    */
+    int isSpace(int ch);
+    int hasNext(FILE* inFile, int* lcount);
+    int getNext(FILE* inFile, char str[]);
+    int isEqual(char a[], const char b[]);
+    void skipLine(FILE* inFile);
+    int isDigit(char a[]);
+    int getSuit(char a);
+    int getRank(char a);
+    int getColor(char a);
+    int isValidCard(char a[]);
+    
+    /*
         Prototype of the part1 function that is implemented in part1.c.
         Simply implements all the features required for part1 of this project.
         Please refer to the documentation in part1.h
     */
     int part1(FILE* inFile, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], struct Card waste[MAX_CARD], int* wasteSize,
-            struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], int fSize[MAX_FOUND], int* turns, int* limit);
+              struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], int fSize[MAX_FOUND], int* turns, 
+              int* limit, int* lcount);
 
 /*
     @autor: Omar Muhammetkulyyev
@@ -161,4 +261,7 @@ part1.c:
         Please refer to documentation in part1.h
     */
     int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], int gcSize[COLUMN], struct Card gwaste[MAX_CARD], int* gwasteSize,
-            struct Card gstock[MAX_CARD], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], int* gturns, int* glimit){ }
+            struct Card gstock[MAX_CARD], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], 
+            int* gturns, int* glimit, int* lcount){ }
+
+/************************************************* Part1 end *************************************************/
