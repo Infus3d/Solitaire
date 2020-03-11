@@ -65,7 +65,7 @@ int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize
       while(t--) waste[(*wasteSize)++] = stock[--(*stockSize)];
     }
     else if(A == 'r'){ //check for reset
-      if(!(*limit) || (*stockSize) || !(*waste)){
+      if(!(*limit) || (*stockSize) || !(*wasteSize)){
         printf("Move %d is illegal: %c\n", i+1, A);
         return -1;
       }
