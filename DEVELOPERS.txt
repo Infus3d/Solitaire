@@ -1,3 +1,147 @@
+/************************************************* Part3 begin *************************************************/
+/*
+    @author: Omar Muhammetkulyyev
+*/
+winnableMain.cc:
+    /* Main for COMS327S20 Project. Reads a game cofiguration from a file and
+     * prints out a sequence of moves that leads to a winning state to stdout. 
+     * Reads the filename to read the game state from the command line 
+     * (stdout if omitted). Reports to stderr if a file with given filename 
+     * does not exist. If -m N switch is provided, the maximum number of
+     * allowed moves is set to N (1000 if omitted). If -c switch is provided,
+     * the search uses a "cache" to improve the search time. If -f switch is
+     * provided, the search forces "safe" moves to improve the total search time.
+     * (-f switch may increase the size of the sequence). If -v switch is provided,
+     * the search enters a verbose mode.
+     * @param argc: number of the command line arguments
+     * @param argv: array of strings that represent command line arguments
+     * @return 0 if the program is successfully executed
+      * */
+    int main(int argc, char* argv[]);
+
+/*
+    @author: Omar Muhammetkulyyev
+*/
+part3.hh:
+    /* A struct that defines a game state of a Klondike Solitaire game.
+    * */
+    struct gamestate{ };
+      
+    /* This the third part of the COMS327S20 Project. Takes in an initial game state and the maximum number
+     * of allowed moves and returns true if therer is a sequence of moves that leads to a "winning" game 
+     * configuration. The sequence is pushed into the vector that is provided as a parameter. 
+     * If the cached parameter is enabled, the function employs a cache (hashtable) that helps to reduce 
+     * the overall search time by keeping track of the game states.
+     * If forced parameter is enabled, the search forces the "safe" moves defined by the isSafe function,
+     * which may eventually lead to a faster search while might also increase the # of required to win.
+     * If vformat is enabled, it reports to stderr the search progress during the search and the number 
+     * of configurations checked, number of cache entries and the total time elapsed after the search.
+     * @param G: given initial state of the game
+     * @param ans: a vector that stores the sequence of moves leading to winnable state
+     * @param maxS: the maximum allowed number of moves
+     * @param cached: if true, the search employs a "cache"
+     * @param forced: if true, the search forces "safe" moves
+     * @param vformat: if true the search enters a verbose mode
+     * @return true if there is a sequence of moves for winnable configuration under the given limit, false otherwise.
+     * */
+      bool part3(gamestate G, vector<string>& ans, int maxS, bool cached, bool forced, bool vformat);
+
+/*
+    @author: Omar Muhammetkulyyev
+*/
+part3.cc:
+    /*
+      Constructor for gamestate struct.
+    */
+    gamestate::gamestate(Card _tableau[][MAX_CARD], Card _waste[MAX_STOCK], Card _stock[MAX_STOCK], Card _found[][MAX_CARD], 
+                  int _tSize[COLUMN], int _cSize[COLUMN], int _wasteSize, int _stockSize, int _fSize[MAX_FOUND], int _turns, int _limit);
+    /*
+      Function that gives a "string view" of the gamestate
+    */
+    string gamestate::toString();
+
+    /* Helper function that determines if the game is winnable in current
+     * given game state. Game is winnable if all cards are in the foundation or
+     * if there are no covered cards, no stock cards and at most one waste card.
+     * @param G: given game state to check
+     * @return true if the game is winnable in the given game state, false otherwise
+     * */
+    bool isWinnable(const gamestate& G);
+    
+    /* Struct that aids with undo parameters. Used to save the minimal details
+     * about the configuration of the gamestate before making a move so that
+     * the move can be undone.
+     * */
+    struct undoHelper{ };
+
+    /* Helper function that undoes the most recent move made by isValid
+     * function with the help of the passed undoHelper variable. The most 
+     * recent move is passed with characters A and B where they can be in
+     * form 'A->B'. If the move is '.' or 'r', only the value of character A
+     * is considered.
+     * @param H: the given game state to undo the move in
+     * @param A: the first character that defines a move
+     * @param B: the second character that defines a move
+     * @param h: the helper variable that enables the reversing
+     * */
+    void undo_IsValid(gamestate& H, char A, char B, const undoHelper& h);
+
+    /* Function that determines if the provided move in form of 'A' -> 'B',
+     * '.' or 'r' is valid for the given game state. If it is, the function
+     * proceeds with that move and returns true. If not, it simply returns false;
+     * The function also keeps track of the move so that it be undone later.
+     * @param H: given game state to check
+     * @param A: the first character that defines a move
+     * @param B: the second character that defines a move
+     * @param h: the helper variable that keeps track of the move
+     * @return true if the move is valid for the given game state, false otherwise
+     * */
+    bool isValid(gamestate& H, char A, char B, undoHelper& h);
+
+    /* Function that determines if the move is "safe" for the given game state.
+     * The move is said to be "safe" if the second character is 'f' (meaning
+     * the move puts a card onto one of the foundation piles) and 
+     * if (1) the card is not being moved from the waste pile,unless we are 
+     * turning 1 card over at a time; and (2) the ranks of the foundation cards
+     * on the opposite color are at least as large as the current rank of the 
+     * foundation suit we are adding to.
+     * @param G: given gamestate to check
+     * @param A: the first character that defines a move
+     * @param B: the second character that defines a move
+     * @return true if the move is safe, false otherwise
+     * */
+    bool isSafe(const gamestate& G, char A, char B);
+    
+    //useful constants that help make a "move"
+    const char movesB[] = {'f', '1', '2', '3', '4', '5', '6', '7'};
+    const char misc[] = {'.', 'r'};
+
+    /* Dfs search that tries every possible move before reaching a "winnable" condition. If the cached
+     * parameter is enabled, the function employs a cache (hashtable) that helps to reduce the overall
+     * search time by keeping track of the game states: if the previous encounter of the current game
+     * state had M moves left and it did not reach the winning state and it is greater than the current
+     * moves left N (if M >= N) then the function returns since it is unnecessary to check further.
+     * If forced parameter is enabled, the search forces the "safe" moves defined by the isSafe function.
+     * Which may eventually lead to a faster search while might increase the # of required to win. if vformat
+     * variable is enabled, the function reports to stderr the number of checked configurations so far.
+     * @param G: the current game state
+     * @param hashT: hashtable that acts as a cache
+     * @param ans: vector that contains the moves that lead to winning condition. The vector size is 0 if not winnable.
+     * @param leftMoves: the number of moves left
+     * @param vformat: if enabled, the function will report the progress
+     * @param cached: if true, the function will employ a "cache"
+     * @param forced: if true, the function will force "safe" moves
+     * @param configCount: counter that keeps track of the # of configuration checked
+     * */
+    bool rec(gamestate& G, unordered_map<string, int>& hashT, vector<string>& ans, int leftMoves, 
+              bool vformat, bool cached, bool forced, int& configCount);
+    /*
+      Please refer to the documentation in part3.hh
+    */
+    bool part3(gamestate G, vector<string>& ans, int maxS, bool cached, bool forced, bool vformat);
+
+/************************************************* Part3 end *************************************************/
+
 /************************************************* Part2 begin *************************************************/
 /*
     @author: Omar Muhammetkulyyev
@@ -19,7 +163,7 @@ advanceMain.c:
     * @param argv: array of strings that represent command line arguments
     * @return 0 if the program is successfully executed
     * */
-    int main(int argc, char* argv[]){ }
+    int main(int argc, char* argv[]);
 
 /*
     @author: Omar Muhammetkulyyev
