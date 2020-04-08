@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
     return 0 * fprintf(stderr, "Input is invalid: File %s does not exist!\n", infileName);
   
   int turns, limit, lcount;
-  struct Card tableau[COLUMN][MAX_CARD], waste[MAX_CARD], stock[MAX_CARD], found[MAX_FOUND][MAX_CARD];
+  struct Card tableau[COLUMN][MAX_CARD], waste[MAX_STOCK], stock[MAX_STOCK], found[MAX_FOUND][MAX_CARD];
   int tSize[COLUMN], cSize[COLUMN], wasteSize, stockSize, fSize[MAX_FOUND];
   
   if(!part1(inFile, tableau, tSize, cSize, waste, &wasteSize, stock, &stockSize, found, fSize, &turns, &limit, &lcount))

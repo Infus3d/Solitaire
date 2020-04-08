@@ -19,7 +19,7 @@ int turns, limit;
 int allCard[4][15];
 
 // Global arrays to keep track of the tableau, waste, stock and foundation respectively
-struct Card tableau[COLUMN][MAX_CARD], waste[MAX_CARD], stock[MAX_CARD], found[MAX_FOUND][MAX_CARD];
+struct Card tableau[COLUMN][MAX_CARD], waste[MAX_STOCK], stock[MAX_STOCK], found[MAX_FOUND][MAX_CARD];
 
 // Global arrays to keep track of the size of the tableau columns, tableau seperators, waste, stock and foundation respectively
 int tSize[COLUMN], cSize[COLUMN], wasteSize, stockSize, fSize[MAX_FOUND];
@@ -87,10 +87,10 @@ int getNext(FILE* inFile, char str[]){
  * @return 1 if the strings are equal, 0 otherwise
  * */
 int isEqual(char a[], const char b[]){
-    if(strlen(a) != strlen(b))
+    if((int)strlen(a) != (int)strlen(b))
         return 0;
     
-    for(int i=0; i<strlen(a); i++)
+    for(int i=0; i<(int)strlen(a); i++)
         if(a[i] != b[i])
             return 0;
     
@@ -116,7 +116,7 @@ void skipLine(FILE* inFile){
  * @return 1 if the string is between 0 <= string <= 9, 0 otherwise
  * */
 int isDigit(char a[]){
-    if(strlen(a) != 1)
+    if((int)strlen(a) != 1)
         return 0;
     
     return '0' <= a[0] && a[0] <= '9';
@@ -186,7 +186,7 @@ int rules(FILE* inFile){
  * @return the corresponsing index of occurrence in "cdhs", -1 if not found
  * */
 int getSuit(char a){
-    for(int i=0; i<strlen(suits); i++)
+    for(int i=0; i<(int)strlen(suits); i++)
         if(suits[i] == a)
             return i;
     return -1;
@@ -196,7 +196,7 @@ int getSuit(char a){
  * @return the corresponsing index of occurrence in "_A23456789TJQK", -1 if not found
  * */
 int getRank(char a){
-    for(int i=0; i<strlen(ranks); i++)
+    for(int i=0; i<(int)strlen(ranks); i++)
         if(ranks[i] == a)
             return i;
     return -1;
@@ -215,7 +215,7 @@ int getColor(char a){
  * @return 1 if the given string is indeed card, 0 otherwise
  * */
 int isValidCard(char a[]){
-    if(strlen(a) != 2)
+    if((int)strlen(a) != 2)
         return 0;
     
     return ~getSuit(a[1]) && ~getRank(a[0]);
@@ -397,8 +397,8 @@ int stockAndWaste(FILE* inFile){
     return 1;
 }
 
-int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], int gcSize[COLUMN], struct Card gwaste[MAX_CARD], int* gwasteSize,
-            struct Card gstock[MAX_CARD], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], 
+int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], int gcSize[COLUMN], struct Card gwaste[MAX_STOCK], int* gwasteSize,
+            struct Card gstock[MAX_STOCK], int* gstockSize, struct Card gfound[MAX_FOUND][MAX_CARD], int gfSize[MAX_FOUND], 
             int* gturns, int* glimit, int* lcount){
     
     char str[MAX_CHAR];
@@ -454,9 +454,9 @@ int part1(FILE* inFile, struct Card gtableau[][MAX_CARD], int gtSize[COLUMN], in
             }
     }
     /******************** Checking for missing cards ***********************/
-    char missing[MAX_CARD][3]; int missingSize = 0;
-    for(int i=0; i<strlen(suits); i++)
-        for(int j=1; j<strlen(ranks); j++){
+    char missing[MAX_STOCK][3]; int missingSize = 0;
+    for(int i=0; i<(int)strlen(suits); i++)
+        for(int j=1; j<(int)strlen(ranks); j++){
             if(!allCard[i][j]){
                 missing[missingSize][1] = suits[i];
                 missing[missingSize][0] = ranks[j];

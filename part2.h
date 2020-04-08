@@ -30,6 +30,6 @@
    *         or -1 if the provided move is not valid for that instant of the game state
    * */
   int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], 
-          struct Card waste[MAX_CARD], int* wasteSize, struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], 
+          struct Card waste[MAX_STOCK], int* wasteSize, struct Card stock[MAX_STOCK], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], 
           int fSize[MAX_FOUND], int* turns, int* limit, int* lcount);
 #endif

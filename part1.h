@@ -4,7 +4,8 @@
     
     /* Useful global constants.
      * */
-    #define MAX_CARD 70
+    #define MAX_CARD 16
+    #define MAX_STOCK 55
     #define MAX_FOUND 4
     #define COLUMN 7
     #define MAX_CHAR 20
@@ -57,7 +58,7 @@
      * @param lcount: current line number before processing MOVES section
      * @return 1 if the file has been successfully read, 0 otherwise
      * */
-    int part1(FILE* inFile, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], struct Card waste[MAX_CARD], int* wasteSize,
-              struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], int fSize[MAX_FOUND], int* turns, 
+    int part1(FILE* inFile, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], struct Card waste[MAX_STOCK], int* wasteSize,
+              struct Card stock[MAX_STOCK], int* stockSize, struct Card found[][MAX_CARD], int fSize[MAX_FOUND], int* turns, 
               int* limit, int* lcount);
 #endif

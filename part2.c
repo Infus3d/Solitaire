@@ -3,9 +3,6 @@
 #include "stdio.h"
 #include "string.h"
 
-//keeping the # of curline
-int lineCount;
-
 /* Returns the minimum of the two input parameters
  * @param x: first integer to compare
  * @param y: second integer to compare
@@ -16,10 +13,11 @@ int min(int x, int y){
 }
 
 int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize[COLUMN], int cSize[COLUMN], 
-          struct Card waste[MAX_CARD], int* wasteSize, struct Card stock[MAX_CARD], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], 
+          struct Card waste[MAX_STOCK], int* wasteSize, struct Card stock[MAX_STOCK], int* stockSize, struct Card found[MAX_FOUND][MAX_CARD], 
           int fSize[MAX_FOUND], int* turns, int* limit, int* lcount){
   
-  lineCount = *lcount;
+  //keeping the # of curline
+  int lineCount = *lcount;
   char A, B;
   int i = 0;
   
@@ -65,7 +63,7 @@ int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize
       while(t--) waste[(*wasteSize)++] = stock[--(*stockSize)];
     }
     else if(A == 'r'){ //check for reset
-      if(!(*limit) || (*stockSize) || !(*wasteSize)){
+      if(!(*limit) || (*stockSize)){
         printf("Move %d is illegal: %c\n", i+1, A);
         return -1;
       }
