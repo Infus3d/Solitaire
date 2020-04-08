@@ -13,7 +13,7 @@ Part1 was implemented **solely by me** (no partner) and below are the features I
 * Reports correct number of stock cards on valid inputs
 * Reports correct number of waste cards on valid inputs
 * No error messages on valid inputs
-* Error messages to stderr
+* Error messages to _stderr_
 * Formatting error messages include line numbers
 * Appropriate error messages for formatting errors
 * Checks that the tableau piles are legal
@@ -49,13 +49,13 @@ Part2 was implemented **solely by me** (no partner) and below are the features I
 ### Part3
 Part3 of the project reads the initial game configuration from the provided file in the command line (_stdin_ if not specified) and returns a sequence of moves that leads to winning configuration. It finds the sequence by checking all possible moves within the provided range by using Depth First Search (DFS). The number of maximum allowed size of the sequence is controlled via _-m N_ switch and is set to _1000_ by default. The speed of the search can be controlled via _-c_ switch, in which case the search employs a cache to keep track of the previously encountered game states. If _-f_ switch is provided, the search will force a "safe" move wherever possible, even though doing so might lead to a longer sequence. The verbose mode can be enabled by _-v_ switch.  
 Part3 was implemented **solely by me** (no partner) and below are the features I implemented from the pdf:
-* README file, that describes implemented features
-* DEVELOPERS file, that gives an overview of my implementation, including a breakdown of source files and functions, and who authored each function.
+* **README** file, that describes implemented features
+* **DEVELOPERS** file, that gives an overview of my implementation, including a breakdown of source files and functions, and who authored each function.
 * Working Makefile.  Typing “make” builds executables _check_, _advance_ and _winnable_.
 * Reads from _stdin_ if no filename argument
 * Reads from filename passed as an argument
 * Output written to _stdout_
-* Output "# Game is winnable/not winnable"
+* Output _"# Game is winnable/not winnable"_
 * Move sequences formatted correctly
 * _-m_ switch works
 * Finds a winning sequence if one exists
