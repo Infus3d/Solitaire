@@ -4,7 +4,7 @@
     
     /* Useful global constants.
      * */
-    #define MAX_CARD 16
+    #define MAX_CARD 20
     #define MAX_STOCK 55
     #define MAX_FOUND 4
     #define COLUMN 7

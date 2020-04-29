@@ -39,12 +39,12 @@ gamestate::gamestate(Card _tableau[][MAX_CARD], Card _waste[MAX_STOCK], Card _st
 
 string gamestate::toString(){
   string ret = to_string(limit) + "\n";
-  // for(int i=0; i<MAX_FOUND; i++){      // given that the game state is always valid
-    // ret += found[i][fSize[i]-1].rank;  // we can just omit the foundation part when
-    // ret += found[i][fSize[i]-1].suit;  // we hash becuse they can have only 1 configuration
-    // if(i+1 < MAX_FOUND) ret += " ";    // for any given configuration of tableau and stock/waste
-  // }
-  // ret += "\n";
+  for(int i=0; i<MAX_FOUND; i++){      // given that the game state is always valid
+    ret += found[i][fSize[i]-1].rank;  // we can just omit the foundation part when
+    ret += found[i][fSize[i]-1].suit;  // we hash becuse they can have only 1 configuration
+    if(i+1 < MAX_FOUND) ret += " ";    // for any given configuration of tableau and stock/waste
+  }
+  ret += "\n";
   for(int i=COLUMN-1; i>=0; i--){
     if(!cSize[i]) ret += "| ";
     for(int j=0; j<tSize[i]; j++){
@@ -231,6 +231,11 @@ bool isValid(gamestate& H, char A, char B, undoHelper& h){
   return true;
 }
 
+bool isValid(gamestate& H, char A, char B){
+  undoHelper h = undoHelper(0, 0, 0);
+  return isValid(H, A, B, h);
+}
+
 /* Function that determines if the move is "safe" for the given game state.
  * The move is said to be "safe" if the second character is 'f' (meaning
  * the move puts a card onto one of the foundation piles) and 
@@ -256,6 +261,8 @@ bool isSafe(const gamestate& G, char A, char B){
 //useful constants that help make a "move"
 const char movesB[] = {'f', '1', '2', '3', '4', '5', '6', '7'};
 const char misc[] = {'.', 'r'};
+int minn = 1000;
+vector<string> cur;
 
 /* Dfs search that tries every possible move before reaching a "winnable" condition. If the cached
  * parameter is enabled, the function employs a cache (hashtable) that helps to reduce the overall
@@ -263,7 +270,7 @@ const char misc[] = {'.', 'r'};
  * state had M moves left and it did not reach the winning state and it is greater than the current
  * moves left N (if M >= N) then the function returns since it is unnecessary to check further.
  * If forced parameter is enabled, the search forces the "safe" moves defined by the isSafe function.
- * Which may eventually lead to a faster search while might increase the # of required to win. if vformat
+ * Which may eventually lead to a faster search while it might increase the # of required to win. if vformat
  * variable is enabled, the function reports to stderr the number of checked configurations so far.
  * @param G: the current game state
  * @param hashT: hashtable that acts as a cache
@@ -288,8 +295,12 @@ bool rec(gamestate& G, unordered_map<string, int>& hashT, vector<string>& ans, i
   }
   
   configCount++;
-  if(vformat && configCount % 76543 == 0)
+  minn = leftMoves < minn ? leftMoves : minn;
+  if(vformat && configCount % 76543 == 0){
     fprintf(stderr, "\r%'d configurations checked so far", configCount);
+    fprintf(stderr, "and %d is the minimum so far", minn);
+    fflush(stdout);
+  }
   
   gamestate H = gamestate(G);
   undoHelper h = undoHelper(0, 0, 0);
@@ -306,12 +317,15 @@ bool rec(gamestate& G, unordered_map<string, int>& hashT, vector<string>& ans, i
       h.okLen = h.stockSize = h.cSize = 0;
       if(isValid(H, movesA[i], movesB[0], h)){ 
         if(isSafe(H, movesA[i], movesB[0])){
+          // string move = ""; move += movesA[i]; move += "->"; move += movesB[0]; //
+          // cur.push_back(move); //
           isFound |= rec(H, hashT, ans, leftMoves-1, vformat, cached, forced, configCount);
           if(isFound){
-            string move = ""; move += movesA[i]; move += "->"; move += movesB[0];
+            string move = ""; move += movesA[i]; move += "->"; move += movesB[0]; //
             ans.push_back(move);
             return isFound;
           }
+          // cur.pop_back(); //
           return isFound;
         }
         undo_IsValid(H, movesA[i], movesB[0], h);
@@ -322,13 +336,18 @@ bool rec(gamestate& G, unordered_map<string, int>& hashT, vector<string>& ans, i
   for(int i=0; i<2; i++){
     h.okLen = h.stockSize = h.cSize = 0;
     if(isValid(H, misc[i], misc[i], h)){
+      // string move = ""; move += misc[i];//
+      // cur.push_back(move); //
+      
       isFound |= rec(H, hashT, ans, leftMoves-1, vformat, cached, forced, configCount);
       undo_IsValid(H, misc[i], misc[i], h);
-    }
-    if(isFound){
-      string move = ""; move += misc[i];
-      ans.push_back(move);
-      return isFound;
+              
+      if(isFound){
+        string move = ""; move += misc[i]; //
+        ans.push_back(move);
+        return isFound;
+      }
+      // cur.pop_back(); //
     }
   }
   
@@ -337,13 +356,18 @@ bool rec(gamestate& G, unordered_map<string, int>& hashT, vector<string>& ans, i
       if(movesA[i] == movesB[j]) continue;
       h.okLen = h.stockSize = h.cSize = 0;
       if(isValid(H, movesA[i], movesB[j], h)){
+        // string move = ""; move += movesA[i]; move += "->"; move += movesB[j]; //
+        // cur.push_back(move); //
+        
         isFound |= rec(H, hashT, ans, leftMoves-1, vformat, cached, forced, configCount); 
         undo_IsValid(H, movesA[i], movesB[j], h);
-      }
-      if(isFound){
-        string move = ""; move += movesA[i]; move += "->"; move += movesB[j];
-        ans.push_back(move);
-        return isFound;
+          
+        if(isFound){
+          string move = ""; move += movesA[i]; move += "->"; move += movesB[j]; //
+          ans.push_back(move);
+          return isFound;
+        }
+        // cur.pop_back(); //
       }
     }
   }
@@ -368,5 +392,45 @@ bool part3(gamestate G, vector<string>& ans, int maxS, bool cached, bool forced,
     // fprintf(stderr, "Time spent on hashtable: %.6lf s.\n", totT);
   }
   
+  /*
+  int cn = 0;
+  printf("# Possible sequence:\n"); fflush(stdout); // 
+  for(string i : cur) //
+    cout << i << " \n"[(++cn)%5 == 0]; //
+  fflush(stdout);
+  
+  vector<string> v;
+  unordered_map<string, int> mep;
+  gamestate S = gamestate(G);
+  undoHelper h = undoHelper(0, 0, 0);
+  mep[G.toString()] = -1; v.push_back(S.toString());
+  for(int i=0; i<(int)cur.size(); i++){
+    string t = cur[i];
+    char A, B;
+    if((int)t.size() == 1) A = B = t[0];
+    else  A = t[0], B = t[3];
+    if(!isValid(S, A, B, h)){
+      printf("Move %d not valid! ", i+1);
+      cout << t << endl;
+      break;
+    }
+    string hesh = S.toString();
+    if(mep[hesh] != 0){
+      cout << "State " << hesh << " has been seen before on move " << mep[hesh] << " and we are currently at move " << i+1 << endl;
+      break;
+    }
+    mep[hesh] = i+1;
+    v.push_back(hesh);
+    // cout << hesh << endl;
+  }
+  
+  for(int i=0; i<(int)v.size(); i++)
+    for(int j=i+1; j<(int)v.size(); j++)
+      if(v[i] == v[j]){
+        printf("These two bois are the same: %d, %d\n", i, j);
+      }
+  
+  isFound = 0;
+  */
   return isFound;
 }

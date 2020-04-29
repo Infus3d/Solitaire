@@ -94,7 +94,7 @@ int part2(FILE* inFile, int maxMoves, struct Card tableau[][MAX_CARD], int tSize
           if(tSize[bCol])
             onto = tableau[bCol][tSize[bCol]-1];
           else
-            onto.rank = '_', onto.suit = 'u', onto.irank = 14, onto.isuit = -1, onto.color = 0;
+            onto.rank = '!', onto.suit = 'u', onto.irank = 14, onto.isuit = -1, onto.color = 0;
           
           if(from.color != onto.color && from.irank == onto.irank-1)
             tableau[bCol][tSize[bCol]++] = waste[--(*wasteSize)];

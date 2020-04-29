@@ -1,4 +1,13 @@
-all: check advance winnable
+all: check advance winnable game
+
+game: gameMain.o part4.o part3.o part2.o part1.o
+	g++ -Wall -o game gameMain.o part4.o part3.o part2.o part1.o -lncursesw
+
+gameMain.o: gameMain.cc part4.hh part3.hh part2.h part1.h
+	g++ -Wall -c gameMain.cc
+
+part4.o: part4.cc part4.hh part3.hh part2.h part1.h
+	g++ -Wall -c part4.cc -lncurses
 
 winnable: winnableMain.o part3.o part2.o part1.o
 	g++ -Wall -o winnable winnableMain.o part3.o part2.o part1.o
@@ -17,7 +26,7 @@ advanceMain.o: advanceMain.c part2.h part1.h
 
 part2.o: part2.c part2.h part1.h
 	g++ -Wall -c part2.c
-	
+
 check: checkMain.o part1.o
 	g++ -Wall -o check checkMain.o part1.o
 

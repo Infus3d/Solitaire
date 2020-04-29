@@ -16,6 +16,12 @@
     // Arrays and variables to keep track of the size of the tableau columns, tableau seperators, waste, stock and foundation respectively
     int tSize[COLUMN], cSize[COLUMN], wasteSize, stockSize, fSize[MAX_FOUND];
     
+    /* An empty contructor
+     * */
+    gamestate(){
+      wasteSize = stockSize = limit = turns = 0;
+    };
+    
     /* Constructor for gamestate.
      * @param _tableau: cards in the tableau
      * @param _waste: cards in the waste
@@ -40,8 +46,10 @@
     string toString();
   };
   
+  bool isValid(gamestate &H, char A, char B);
+  
   /* This the third part of the COMS327S20 Project. Takes in an initial game state and the maximum number
- * of allowed moves and returns true if therer is a sequence of moves that leads to a "winning" game 
+ * of allowed moves and returns true if there is a sequence of moves that leads to a "winning" game 
  * configuration. The sequence is pushed into the vector that is provided as a parameter. 
  * If the cached parameter is enabled, the function employs a cache (hashtable) that helps to reduce 
  * the overall search time by keeping track of the game states.
