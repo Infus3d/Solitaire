@@ -63,3 +63,25 @@ Part3 was implemented **solely by me** (no partner) and below are the features I
 * Works for _limit R_
 * _-f_ switch works
 * _-c_ switch works
+
+
+### Part4
+Part4 of the project either reads the initial game configuration from the provided file or generates one randomly using the provided _seed_ via _-s seed_ switch. Afterwards, the program displays the game panels (Tableau, Foundation, Stock and Waste) on the terminal emulator with the help of ncurses library. The terminal is meant to be an easy-to-interact GUI for those who want to play simple Klondike Solitaire. Initial game state can be passed from a file by _-f fileName_ switch. If the _-s seed_ switch is chosen instead, then the user can control the number of turns (at a time) in the game by _-1_ and _-3_ switches. He/She can also control the limit of resets in the game with _-l limit_ switch where limit meets the criteria _limit < 10_. If the latter switch is omitted, the number of resets is assumed to be _unlimited_. The game is meant to be played in 25x80 linux terminal. The user might need to press an additional key after running the program to actually see the game.   
+Part4 was implemented **solely by me** (no partner) and below are the features I implemented from the pdf:
+* **README** file, that describes implemented features
+* **DEVELOPERS** file, that gives an overview of my implementation, including a breakdown of source files and functions, and who authored each function.
+* Working **Makefile**.
+* My _check_ executable still works
+* My _advance_ executable still works
+* Tableau display
+* Foundations display
+* Waste top display
+* Hotkeys display
+* Game Play
+* Quit exits cleanly
+* _-f_ switch works
+* _-s_ switch works
+* Turn 3
+* Limited stock resets
+* Undo last move
+* Undo several moves

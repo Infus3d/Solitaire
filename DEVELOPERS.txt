@@ -1,3 +1,189 @@
+/************************************************* Part4 begin *************************************************/
+/*
+    @author: Omar Muhammetkulyyev
+*/
+gameMain.cc:
+      /* Main for the last (4th) part of the COMS327S20 Project. Reads a game
+       * configuration from a file or generates a random one from the seed passed
+       * as a command line argument. Afterwards, it displays the game on the terminal
+       * with the help of ncurses library. It is supposed to provide a smooth interaction
+       * with the user. If -f fileName is passed, the program reads from a file. If -s seed
+       * is provided, the program generates a random game from the given seed. If none of
+       * them are provided, a random game based on a random seed is generated. The user can
+       * control the number of turns in case of -s seed switch with -1 or -3 (1 turns or 3 turns
+       * at a time, respectively). He/She can also control the limit of the game with -l limit
+       * switch (limit < 10), 'unlimited' if omitted.
+       * @param argc: number of the command line arguments
+       * @param argv: array of strings that represent command line arguments
+       * @return 0 if the program is successfully executed
+       * */
+      int main(int argc, char* argv[]);
+
+/*
+      @author Omar Muhammetkulyyev
+*/
+part4.hh:
+      /* Generates a random game from the given seed rSeed. Turns and limit of
+       * the game is not determined by the randomness and instead are provided
+       * as an argument. The logic of the randoming below is simple: shuffle the
+       * initially oredered deck of 52 cards and assign them to wherever we want
+       * starting from the beginning. The function always returns the tableau
+       * with 1 open card in every column and (i-1) covered cards in every ith column
+       * (1 <= i <= 7). The rest are kept in stock.
+       * @param rSeed: the given seed to decide the randomness upon
+       * @param turns: given number of turned cards at a time
+       * @param limit: given limit of the resets in the game( < 10), unlimited if 10.
+       * @return randomly generated gamestate from the given rSeed
+       * */
+        gamestate generate_from_seed(unsigned rSeed, int turns, int limit);
+        
+        /* This is the 4th part of the COMS327S20 Project. Takes in an initial game state
+       * whether it is randomly generated or read from a file, then displays the game
+       * on the terminal emulator with the help of ncurses library. The game has multiple
+       * options like Quit, Restart, New Game, Save to file, Undo and of course the game's
+       * moves. The screen is split into 3 main(table, misc, hotkeys) and 1 secondary (status) windows.
+       * Pressing "New Game" initiates a new random game with seed chosen at random too. The source
+       * of the game (file or seed) is displayed to the user. Owing to the status window,
+       * the user might have smoother interaction with the game.
+       * Maximum of 1000 consequtive moves is allowed, excluding the ones that were un-done.
+       * @param H: given initial gamestate
+       * @param _rSeed: the seed that the randomness of the initial game state is based on
+       * @param _turns: the number of cards to turn at a time
+       * @param _limit: maximum number of allowed resets
+       * @param fileName: the name of the file that the game state was read from, if applicable
+       * */
+        void part4(gamestate H, unsigned rSeed, int turns, int limit, char* fileName);
+
+part4.cc:
+      /* Generates a random game from the given seed rSeed. Turns and limit of
+       * the game is not determined by the randomness and instead are provided
+       * as an argument. The logic of the randoming below is simple: shuffle the
+       * initially oredered deck of 52 cards and assign them to wherever we want
+       * starting from the beginning. The function always returns the tableau
+       * with 1 open card in every column and (i-1) covered cards in every ith column
+       * (1 <= i <= 7). The rest are kept in stock.
+       * @param rSeed: the given seed to decide the randomness upon
+       * @param turns: given number of turned cards at a time
+       * @param limit: given limit of the resets in the game( < 10), unlimited if 10.
+       * @return randomly generated gamestate from the given rSeed
+       * */
+      gamestate generate_from_seed(unsigned rSeed, int turns, int limit)
+      
+            
+      /* Helper struct that keeps track of the window
+       * starting positions, columns and rows
+       * */
+      struct myWindow{
+        WINDOW *win;
+        int cols, rows;
+        int y, x;
+      };
+
+      /* Helper function that initializes all needed pair of colors
+       * */
+      void init_color_pairs();
+
+      /* Helper function that takes in a hotkeys window and prompts the user
+       * on that window for an outfile name.
+       * @param hot: given hotkeys window
+       * @return the outfile to write the current game state to (in exchange format)
+       * */
+      FILE* prompt_for_outFile(myWindow &hot);
+
+      /* Simply writes the given game state onto the given out file in exchange
+       * format (Discribed in part2/part3).
+       * @param outFile: given outfile to write on
+       * @param G: given gamestate to "save"
+       * */
+      void write_to_outFile(FILE *outFile, gamestate &G);
+
+      /* Helper function that takes in a character indicating a suit ('c','h','d', 's')
+       * and returns the unicode equivalent symbol of the suit.
+       * @param suit: given suit to get the Unicode character of
+       * @return the Unicode character of the suit (UTF-8, probs)
+       * */
+      wchar_t cardUnicode (char suit);
+
+      /* One of the three (3) main windows in this game is table. It simply stores
+       * the tableau and is called everytime if any action occurs. The function first
+       * clears its every cell and then writes the updated gamestate as tableau.
+       * @param T: given table window
+       * @param G: given gamestate
+       * */
+      void print_table(myWindow &T, gamestate &G);
+
+      /* Simple min function of two integers
+       * */
+      inline int min(int x, int y);
+
+      /* One of the three (3) main windows in this game is misc. Misc is used
+       * to display the Foundations and waste/stock of the given game state.
+       * The function first clears everything before proceeding with updates.
+       * @param M: given misc window
+       * @param G: given game state to display
+       * */
+      void print_misc(myWindow &M, gamestate &G);
+
+      /* One of the three (3) main windows in this game is hotkeys. The window
+       * is used to display the instructions on how to play the game: the hotkeys,
+       * the order of moves, etc. It also encapsulates the save to file text box
+       * at the bottom of the window (it is displayed whenever user presses S to
+       * save).
+       * @param H: given hotkeys window
+       * @param G: given game state to display
+       * @param fileName: fileName and rSeed are needed to display the source of the
+       * game (if it is a random game or file created)
+       * @param rSeed: fileName and rSeed are needed to display the source of the game
+       * (if it is a random game or file specified)
+       * */
+      void print_hotkeys(myWindow &H, gamestate &G, char *fileName, unsigned rSeed);
+
+      /* This function simply calls its sub-functions, in order. First display
+       * the table, then misc, hotkeys and status. The parameters are needed for
+       * some of the sub-functions for varius reasons (refer to their documentation).
+       * */
+      void print_to_stdscr(gamestate &G, myWindow &table, myWindow &misc, 
+            myWindow &hotkeys, myWindow status, char *fileName, unsigned rSeed);
+      
+      /* Small window that appears at the bottom of the left half of the screen.
+       * It is called a 'status' window because it is used to let user know about
+       * many things that might help the user's interaction with the game. For ex:
+       * it tells if the move the user just did was valid or invalid (it is not actually
+       * done, if it is invalid).
+       * @param S: the status window
+       * @param w: an integer that is used in switch/case statement. Every different
+       * value passed indicated different status.
+       * @param A: the first character defining a move
+       * @param B: the second character defingin a move, if applicable
+       * */
+      void update_status(myWindow &S, int w, char A = 0, char B = 0);
+
+      /* Helper function that determines if the game is won in its given state.
+       * @param G: given gamestate to check
+       * @return true if all of the cards are in the FOUNDATIONS, false otherwise.
+       * */
+      bool isWon(gamestate &G);
+
+      /* This is the 4th part of the COMS327S20 Project. Takes in an initial game state
+       * whether it is randomly generated or read from a file, then displays the game
+       * on the terminal emulator with the help of ncurses library. The game has multiple
+       * options like Quit, Restart, New Game, Save to file, Undo and of course the game's
+       * moves. The screen is split into 3 main(table, misc, hotkeys) and 1 secondary (status) windows.
+       * Pressing "New Game" initiates a new random game with seed chosen at random too. The source
+       * of the game (file or seed) is displayed to the user. Owing to the status window,
+       * the user might have smoother interaction with the game.
+       * Maximum of 1000 consequtive moves is allowed, excluding the ones that were un-done.
+       * @param H: given initial gamestate
+       * @param _rSeed: the seed that the randomness of the initial game state is based on
+       * @param _turns: the number of cards to turn at a time
+       * @param _limit: maximum number of allowed resets
+       * @param fileName: the name of the file that the game state was read from, if applicable
+       * */
+      void part4(gamestate H, unsigned _rSeed, int _turns, int _limit, char* fileName);
+
+
+/************************************************* Part4 end *************************************************/
+
 /************************************************* Part3 begin *************************************************/
 /*
     @author: Omar Muhammetkulyyev
