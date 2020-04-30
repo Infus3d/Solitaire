@@ -506,8 +506,7 @@ void part4(gamestate H, unsigned _rSeed, int _turns, int _limit, char* fileName)
   initscr(); cbreak();
   keypad(stdscr, TRUE);
   start_color(); noecho();
-  // getmaxyx(stdscr, rows, cols);
-  curs_set(0);
+  refresh(); curs_set(0);
   
   init_color_pairs();
   
