@@ -1,13 +1,13 @@
 all: check advance winnable game
 
-cleanAll: check advance winnable game gameMain.o part4.o part3.o part2.o part1.o
-	rm check advance winnable game gameMain.o part4.o part3.o part2.o part1.o
+cleanAll: check advance winnable game gameMain.o winnableMain.o advanceMain.o checkMain.o part4.o part3.o part2.o part1.o
+	rm check advance winnable game gameMain.o winnableMain.o advanceMain.o checkMain.o part4.o part3.o part2.o part1.o  #or just do *.o
 
-cleanO: gameMain.o part4.o part3.o part2.o part1.o
-	rm gameMain.o part4.o part3.o part2.o part1.o
+cleanO: gameMain.o winnableMain.o advanceMain.o checkMain.o part4.o part3.o part2.o part1.o
+	rm *.o
 
 clean: check advance winnable gameMain.o part4.o part3.o part2.o part1.o
-	rm check advance winnable gameMain.o part4.o part3.o part2.o part1.o
+	rm check advance winnable *.o
 
 game: gameMain.o part4.o part3.o part2.o part1.o
 	g++ -Wall -o game gameMain.o part4.o part3.o part2.o part1.o -lncursesw
