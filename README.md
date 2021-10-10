@@ -1,4 +1,4 @@
-# coms327project1
+# Solitaire
 
 This is a terminal based Solitaire game that anyone can play right from the comfort of their terminal. The project was done in 4 parts with each part explained in detail below. The entire project was developed using C/C++ only. To play the game, please clone, make and run the _game_ executable. 
 
